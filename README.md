@@ -6,7 +6,7 @@ Projeto desenvolvido como atividade acadêmica com apoio de ferramentas de IA e 
 
 Exercício simples: uma classe chamada Carro, que representa um modelo básico de veículo. A classe possui atributos como modelo, ano de fabricação e velocidade inicial. Também são definidos métodos para simular a aceleração do veículo, atualizando sua velocidade, e para exibir suas informações. Ao final, é criado um objeto da classe, no qual são executadas operações de aceleração e exibição de dados.
 
-## 😴 Manipulação de elementos
+## 😴 ManipulaçãoElemts
 
 O programa trabalha com uma lista que armazena quatro valores informados pelo usuário. Em seguida, remove o primeiro e o último elemento da estrutura. Depois disso, exibe o conteúdo final da lista, seu tamanho e verifica se ela está vazia. O objetivo é praticar manipulação básica de listas e seus principais métodos.
 
