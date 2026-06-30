@@ -1,0 +1,471 @@
+#==================================================================
+# GERENCIAMENTO DE PROCESSOS E DISCO
+#==================================================================
+
+#BIBLIOTECAS IMPORTADAS ;P
+import os
+import psutil
+import shutil
+import time
+
+#==================================================================
+# MANIPULAR ARQUIVOS E PASTAS
+#==================================================================
+
+#==================================================================
+#LISTAGEM DE ARQUIVOS
+#==================================================================
+
+def listar_arqs():
+    print("\nARQUIVOS:")
+    for item in os.listdir("."):
+        if os.path.isfile(item):
+            print(f"[ARQ]: {item}")
+        elif os.path.isdir(item):
+            print(f"[DIR]: {item}")
+
+#==================================================================
+#CRIAÇÃO DE ARQUIVOS
+#==================================================================
+
+def criar_arq():
+    nome = input("\nNome: ")
+    texto = input("Conteúdo do Arquivo: ")
+    if os.path.exists(nome):
+        print("Arquivo já existe.")
+    else:
+        with open(nome, "w") as f:
+            f.write(texto)
+        print("Criado com triunfo!(╭ರ_•́)")
+
+#==================================================================
+# EDIÇÃO DE ARQUIVOS - SUBMENU
+#==================================================================
+
+def edit_aqvs():
+    while True:
+        print("\n=======================================================")
+        print("~~~~ ✩₊˚.⋆☾⋆⁺₊✧ SUBMENU // ARQUIVOS: ✩₊˚.⋆☾⋆⁺₊✧ ~~~~")
+        print("=======================================================")
+        print("[1] Criar")
+        print("[2] Substituir")
+        print("[3] Adicionar")
+        print("[4] Ler")
+        print("[5] Mais opções")
+        print("[6] Voltar")
+
+        op = input("opção: ")
+
+        #SAÍDA DO SUBMENU
+        if op == "6":
+            return
+        
+        #MAIS OPÇÕES
+        elif op == "5":
+            mais_um_submenu()
+            continue
+
+        #CRIAR
+        if op == "1":
+            criar_arq()
+            continue
+
+        nome = input("Nome do arquivo: ")
+
+        if not os.path.exists(nome):
+            print("Arquivo não encontrado.(¬_¬')")
+            continue
+
+        #SUBSTITUIR
+        if op == "2":
+            texto = input("Texto: ")
+            with open(nome, "w") as f:
+                f.write(texto)
+            print("Atualizado Com Sucesso!(ᵔ ᗜ ᵔ)")
+
+        #ADICIONAR
+        elif op == "3":
+            texto = input("Texto: ")
+            with open(nome, "a") as f:
+                f.write("\n" + texto)
+            print("Conteúdo Adicionado Com Êxito!(ᵔ ᗜ ᵔ)")
+
+        #LER
+        elif op == "4":
+            with open(nome, "r") as f:
+                print(f.read())
+
+        else:
+            print("Operação inválida.. (¬_¬')")
+
+def navegacao():
+    while True:
+        print("\n=======================================================")
+        print("~~~~ ✩₊˚.⋆☾⋆⁺₊✧ NAVEGAR ENTRE PASTAS ✩₊˚.⋆☾⋆⁺₊✧ ~~~~")
+        print("=======================================================")
+
+        print(f"Diretório atual: {os.getcwd()}")
+
+        print("[1] Entrar em pasta")
+        print("[2] Voltar para pasta anterior")
+        print("[3] Ir para caminho completo")
+        print("[4] Saída/Exit")
+
+        op = input("Escolha: ")
+
+        #ENTRAR EM PASTA
+        if op == "1":
+            pasta = input("Nome da pasta: ")
+
+            if os.path.isdir(pasta):
+                os.chdir(pasta)
+                print("Entrou na pasta!(ᵔ ᗜ ᵔ)")
+            else:
+                print("Pasta inválida.(¬_¬')")
+
+        #VOLTAR
+        elif op == "2":
+            os.chdir("..")
+            print("Voltou uma pasta.(ᵔ ᗜ ᵔ)")
+
+        #CAMINHO COMPLETO
+        elif op == "3":
+            caminho = input("Digite o caminho completo: ")
+
+            if os.path.isdir(caminho):
+                os.chdir(caminho)
+                print("Diretório alterado!(ᵔ ᗜ ᵔ)")
+            else:
+                print("Caminho inválido.(¬_¬')")
+
+        elif op == "4":
+            print("Saída!! ✧｡٩(ˊᗜ ˋ )و✧*｡")
+            return
+
+        else:
+            print("Operação inválida.. (¬_¬')")
+
+#==================================================================
+# EDIÇÃO DE PASTAS - SUBMENU
+#==================================================================
+
+def edit_pastas():
+    while True:
+        print("\n=======================================================")
+        print("SUBMENU // PASTAS")
+        print("=======================================================")
+        print("[1] Criar pasta")
+        print("[2] Criar arquivo em pasta")
+        print("[3] Navegar entre pastas")
+        print("[4] Voltar")
+
+        op = input("Escolha uma opção: ")
+
+        #SAÍDA
+        if op == "4":
+            return
+
+        #CRIAR PASTA
+        elif op == "1":
+            nome = input("Nome da pasta: ")
+            try:
+                os.mkdir(nome)
+                print("Pasta criada!")
+            except Exception as e:
+                print(f"Erro: {e}")
+
+        #CRIAR ARQUIVO EM PASTA
+        elif op == "2":
+            pasta = input("Nome da pasta: ")
+
+            if not os.path.exists(pasta):
+                print("Pasta não encontrada.")
+                continue
+
+            nome = input("Nome do arquivo: ")
+            texto = input("Conteúdo: ")
+
+            caminho = os.path.join(pasta, nome)
+
+            if os.path.exists(caminho):
+                print("Já existe um arquivo com esse nome.")
+                continue
+
+            with open(caminho, "w") as f:
+                f.write(texto)
+
+            print("Arquivo criado com sucesso!")
+
+        #NAVEGAÇÃO
+        elif op == "3":
+            navegacao()
+
+        else:
+            print("Operação inválida.")
+
+#==================================================================
+#MOVER
+#==================================================================
+
+def mover():
+    origem = input("\nNome do arquivo/pasta: ")
+    
+    if not os.path.exists(origem):
+        print("Nada Encontrado. (ᴗ˳ᴗ)ᶻ𝗓𐰁")
+        return
+
+    destino = input("Destino (pasta): ")
+
+    if not os.path.exists(destino):
+        print("Destino inválido. (¬_¬')")
+        return
+
+    nvcaminho = os.path.join(destino, os.path.basename(origem))
+
+    if os.path.exists(nvcaminho):
+        print("Já existe algo com esse nome no destino.(¬_¬')")
+        return
+
+    shutil.move(origem, nvcaminho)
+
+    print(f"Movido para {nvcaminho} (╭ರ_•́)")
+
+#==================================================================
+#RENOMEAR
+#==================================================================
+
+def renomear():
+    nome = input("\nNome atual: ")
+
+    if not os.path.exists(nome):
+        print("Nada Encontrado. (ᴗ˳ᴗ)ᶻ𝗓𐰁")
+        return
+
+    nvnome = input("Novo nome: ")
+
+    if nvnome == "":
+        print("Operação inválida.. sem sucesso.. (¬_¬')")
+        return
+
+    os.rename(nome, nvnome)
+    print("Nome Modificado Com Sucesso!(ᵔ ᗜ ᵔ)")
+
+#==================================================================
+#MAIIIS SUBMENU :P
+#==================================================================
+
+def mais_um_submenu():
+    while True:
+        print("\n=======================================================")
+        print("~~~~ ✩₊˚.⋆☾⋆⁺₊✧ SUBMENU // ARQUIVOS: ✩₊˚.⋆☾⋆⁺₊✧ ~~~~")
+        print("=======================================================")
+        print("[1] Renomear")
+        print("[2] Mover")
+        print("[3] Copiar")
+        print("[4] Saída/Exit")
+
+        op = input("\nEscolha uma opção: ")
+
+        if op == "1":
+            renomear()
+        elif op == "2":
+            mover()
+        elif op == "3":
+            copiar()
+        elif op == "4":
+            print("Saída!! ✧｡٩(ˊᗜ ˋ )و✧*｡")
+            return
+
+        else:
+            print("Operação inválida.. sem sucesso.. (¬_¬')")
+
+#==================================================================
+#COPIAR
+#==================================================================
+
+def copiar():
+    origem = input("\nNome do arquivo OU pasta: ")
+
+    if not os.path.exists(origem):
+        print("Nada encontrado.(¬_¬')")
+        return
+
+    destino = input("Destino: ")
+
+    if not os.path.exists(destino):
+        print("Destino inválido. (ᴗ˳ᴗ)ᶻ𝗓𐰁")
+        return
+
+    nvcaminho = os.path.join(destino, os.path.basename(origem))
+    origem_abs = os.path.abspath(origem)
+    destino_abs = os.path.abspath(nvcaminho)
+
+    if origem_abs == destino_abs:
+        print("Origem e destino são o mesmo arquivo.(¬_¬')")
+        return
+
+    if os.path.exists(nvcaminho):
+        escolha = input("Já existe. Sobrescrever? (s/n): ")
+
+        if escolha.lower() != "s":
+            print("Cancelado.(x__x)")
+            return
+
+    try:
+        if os.path.isfile(origem):
+            shutil.copy(origem, nvcaminho)
+            print("Arquivo copiado!(ᵔ ᗜ ᵔ)")
+        elif os.path.isdir(origem):
+            shutil.copytree(origem, nvcaminho)
+            print("Pasta copiada!(ᵔ ᗜ ᵔ)")
+    except Exception as e:
+        print(f"Erro: {e}")
+
+#==================================================================
+# DELETAÇÃO
+#==================================================================
+
+def deletar():
+    nome = input("\nNome do Item para deletar: ")
+
+    if not os.path.exists(nome):
+        print("Nada Foi achado. (¬_¬')")
+        return
+
+    confirm = input("Tem certeza que deseja deletar? (s/n): ")
+
+    if confirm.lower() != "s":
+        print("Cancelado.(x__x)")
+        return
+
+    if os.path.isfile(nome):
+        os.remove(nome)
+        print("Arquivo deletado!(ᵕ•᷄_•᷅ )")
+
+    elif os.path.isdir(nome):
+        try:
+            os.rmdir(nome)
+            print("Pasta vazia deletada!(x__x)")
+        except Exception as e:
+            try:
+                shutil.rmtree(nome)
+                print("Pasta com conteúdo deletada!(x__x)")
+            except Exception as e:
+                print(f"Erro:{e}")
+
+#==================================================================
+# LISTAR E MONITORAR PROCESSOS E RECURSOS
+#==================================================================
+
+def listar_processos():
+    print("\nPROCESSOS:")
+    for p in psutil.process_iter(['pid', 'name']):
+        try:
+            print(f"PID: {p.info['pid']} | Nome: {p.info['name']}")
+        except Exception:
+            pass
+
+def sistema():
+    print("\nSISTEMA:")
+    print("CPU:", psutil.cpu_percent(), "%")
+    print("Memória:", psutil.virtual_memory().percent, "%")
+
+#==================================================================
+# SIMULAR ESCALONAMENTO DE PROCESSOS
+#==================================================================
+
+def simular():
+    processos = [
+        {"nome": "P1", "tempo": 5},
+        {"nome": "P2", "tempo": 3},
+        {"nome": "P3", "tempo": 4}
+    ]
+
+    quantum = 2
+    fila = [p.copy() for p in processos]
+
+    print("================================================")
+
+    while len(fila) > 0:
+        p = fila.pop(0)
+    
+        exec_time = min(quantum, p["tempo"])
+        print(f"{p['nome']} executando por {exec_time}s (restante: {p['tempo']}s)")
+
+        if p["tempo"] > quantum:
+            p["tempo"] -= exec_time
+            time.sleep(1)
+            fila.append(p) 
+        else:
+            time.sleep(1)
+            print(f"{p['nome']} finalizado")
+
+#==================================================================
+# MONITORAR DISCO E MEMORIA
+#==================================================================
+
+def monitorardisk_ram():
+    print("\nMONITORAMENTO/DESEMPENHO:")
+
+    cpu = psutil.cpu_percent(interval=1)
+    mem = psutil.virtual_memory()
+    disco = psutil.disk_usage(os.getcwd())
+
+    print(f"CPU: {cpu}%")
+    print(f"Memória: {mem.percent}% ({mem.used // (1024**2)} MB usados)")
+    print(f"Disco: {disco.percent}% usado")
+
+#==================================================================
+# MENU BACANA
+#==================================================================
+
+while True:
+    print("=======================================================")
+    print("~~~~ ✩₊˚.⋆☾⋆⁺₊✧ MENU DE GERENCIAMENTO: ✩₊˚.⋆☾⋆⁺₊✧ ~~~~")
+    print("=======================================================")
+    print("[1] Listagem/dir")
+    print("[2] Edição arquivos")
+    print("[3] Edição pastas")
+    print("[4] Deletar")
+    print("[5] Listagem de Processos + Uso do Sistema")
+    print("[6] Simular escalonamento")
+    print("[7] Monitorar Disco + Ram")
+    print("[0] Saída/Exit")
+
+    op = input("Digite um número: ")
+
+    if op == "1":
+        listar_arqs()
+
+    elif op == "2":
+        edit_aqvs()
+
+    elif op == "3":
+        edit_pastas()
+
+    elif op == "4":
+        deletar()
+        
+    elif op == "5":
+        listar_processos()
+        sistema()
+
+    elif op == "6":
+        simular()
+
+    elif op == "7":
+        monitorardisk_ram()
+
+    elif op == "0":
+        print("Até breve!! ✧｡٩(ˊᗜ ˋ )و✧*｡")
+        break
+
+    else:
+        print("Operação inválida.. sem sucesso.. (¬_¬')")
+
+# IRLANIA FELIX BZ
+# DESAFIO COM A ENTREGA PARA: 26/04/2026 (¬_¬')
+# Deu um trampo danado viu, mas consegui atender os requisitos, CREIO eu. 
+# espero que goste do resultado meu caro!! (ᵔ ᗜ ᵔ)
+# Se quiser me dar um feedback, eu estou disposta a ouvir ou ler KKKK sei la :P sem bronca!! 
+# E se achar enfeitado demais, mals ae queria deixar uma pegada mais incomum. (╭ರ_•́)
